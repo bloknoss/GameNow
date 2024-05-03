@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GameNow.Database\GameNow.Database.csproj" />
+    <ProjectReference Include="..\GameNow.Domain\GameNow.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

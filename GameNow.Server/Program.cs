@@ -1,41 +1,76 @@
-var builder = WebApplication.CreateBuilder(args);
+using GameNow.Database;
+using GameNow.Domain.Entities;
+using GameNow.Domain.Interfaces;
+using GameNow.Infrastructure.Repositories;
+using GameNow.Server.Helpers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-var app = builder.Build();
-
-app.UseCors(c =>
+internal class Program
 {
-	c.AllowAnyOrigin()
-	 .AllowAnyMethod()
-	 .AllowAnyHeader()
-	 .WithExposedHeaders("Content-Disposition", "Content-Length");
-});
+	private static void Main(string[] args)
+	{
+		var builder = WebApplication.CreateBuilder(args);
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
+		builder.Services.AddControllers();
+		builder.Services.AddEndpointsApiExplorer();
+		builder.Services.AddSwaggerGen();
+		builder.Services.AddCors();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-	app.UseDeveloperExceptionPage(); // Beautiful exception pages!
+		builder.Services.AddIdentity<User, IdentityRole>(options =>
+		{
+			options.User.RequireUniqueEmail = true;
+		}).AddEntityFrameworkStores<GameNowContext>().AddDefaultTokenProviders();
 
-	app.UseSwagger();
-	app.UseSwaggerUI();
+
+
+		builder.Services.AddScoped<IRepository<Game>, GameRepository>();
+		builder.Services.AddScoped<IRepository<IdentityUser>, UserRepository>();
+		builder.Services.AddScoped<JwtService>();
+
+		builder.Services.AddDbContext<GameNowContext>(options =>
+		{
+			options.UseSqlServer(builder.Configuration.GetConnectionString("GameNowConnection"));
+		});
+
+		var app = builder.Build();
+
+		using (var scope = app.Services.CreateScope())
+		{
+			var context = scope.ServiceProvider.GetRequiredService<GameNowContext>();
+			context.Database.Migrate();
+		}
+
+		app.UseCors(options =>
+		{
+			options.
+				AllowAnyHeader().
+				AllowAnyMethod().
+				AllowCredentials();
+		});
+
+
+		app.UseDefaultFiles();
+		app.UseStaticFiles();
+
+		// Configure the HTTP request pipeline.
+		if (app.Environment.IsDevelopment())
+		{
+			app.UseDeveloperExceptionPage();
+			app.UseSwagger();
+			app.UseSwaggerUI();
+		}
+
+		app.UseHttpsRedirection();
+
+		app.UseAuthorization();
+
+		app.MapControllers();
+
+		app.MapFallbackToFile("/index.html");
+
+		app.Run();
+	}
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.MapFallbackToFile("/index.html");
-
-app.Run();
