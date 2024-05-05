@@ -1,27 +1,21 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-function App() {
-    const [data, setData] = useState();
+import Login from "./pages/Login";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 
-    useEffect(() => {
-        fetchApi();    
-    }, []);
-    
-    async function fetchApi() {
-        const response = await fetch('/api/Game/GetGames');
-        const data = await response.json();
-        setData(data);
-    }
-
+export default function App() {
     return (
-        <div>
-            <h1 id="tabelLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {data ?? "test"}
-        </div>
+        <main className="">
+            <BrowserRouter>
+                <Navbar></Navbar>
+                <main className="mt-10 flex items-center justify-center">
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/login" element={<Login />} />
+                    </Routes>
+                </main>
+            </BrowserRouter>
+        </main>
     );
-    
 }
-
-export default App;

@@ -1,5 +1,6 @@
 using GameNow.Domain.Entities;
 using GameNow.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +33,7 @@ namespace GameNow.Server.Controllers
 
 		[HttpDelete("DeleteGame")]
 		public IActionResult Delete(int Id)
-		{ 
+		{
 			_gameRepository.Delete(Id);
 			return Ok();
 		}

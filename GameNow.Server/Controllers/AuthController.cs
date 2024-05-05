@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using GameNow.Infrastructure.Repositories;
 using GameNow.Server.Helpers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GameNow.Server.Controllers
 {
@@ -28,7 +29,6 @@ namespace GameNow.Server.Controllers
 		[HttpPost("register")]
 		public async Task<IActionResult> Register(RegisterDto register)
 		{
-			//return Ok(register.Username);
 			var user = new User
 			{
 				UserName = register.Username,
@@ -38,50 +38,25 @@ namespace GameNow.Server.Controllers
 			return Created("success", await _userManager.CreateAsync(user, register.Password));
 		}
 
+
 		[HttpPost("login")]
 		public async Task<IActionResult> Login(LoginDto login)
 		{
 			var user = await _userManager.FindByEmailAsync(login.Email);
 
-			if (user == null)
+			if (user == null || !await _userManager.CheckPasswordAsync(user, login.Password))
 				return BadRequest(new { message = "Invalid Credentials" });
 
-			if (await _userManager.CheckPasswordAsync(user, login.Password) == false)
-				return BadRequest(new { message = "Invalid Credentials" });
+			var jwt = _jwtService.Generate(user);
 
-			var jwt = _jwtService.Generate(Convert.ToInt32(user.Id));
-
-
-			Response.Cookies.Append("jwt", jwt, new CookieOptions
-			{
-				HttpOnly = true
-			});
-
-			return Ok(new
-			{
-				message = "success"
-			});
+			return Ok(jwt);
 		}
 
+		[Authorize]
 		[HttpPost("user")]
 		public IActionResult User()
 		{
-			try
-			{
-				string? jwt = Request.Cookies["jwt"];
-
-				var token = _jwtService.Verify(jwt);
-
-				int userId = int.Parse(token.Issuer);
-
-				var user = _userRepository.GetById(userId);
-
-				return Ok(user);
-			}
-			catch (Exception ex)
-			{
-				return Unauthorized();
-			}
+			return Ok("hello");
 		}
 
 		[HttpPost("logout")]

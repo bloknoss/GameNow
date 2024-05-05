@@ -1,25 +1,41 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using GameNow.Domain.Entities;
+using GameNow.Server.Dtos;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace GameNow.Server.Helpers
 {
 	public class JwtService
 	{
-		private string secureKey = "deqweqweqweqweqweqweweqweqweqwewqeqweqweqweqwewesd";
+		private IConfiguration _configuration;
+		private string? secureKey;
 
-		public string Generate(int id)
+		public JwtService(IConfiguration configuration)
 		{
-			var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secureKey));
-			var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
-			var header = new JwtHeader(credentials);
+			this._configuration = configuration;
+			this.secureKey = _configuration.GetSection("Jwt:Key").Value;
+		}
 
-			var payload = new JwtPayload(id.ToString(), null, null, null, DateTime.Today.AddDays(1));
-			var securityToken = new JwtSecurityToken(header, payload);
+		public string Generate(User user)
+		{
+			IEnumerable<System.Security.Claims.Claim> claims = new List<System.Security.Claims.Claim>
+			{
+				new Claim(ClaimTypes.NameIdentifier, user.Id),
+				new Claim(ClaimTypes.Role, "Admin")
+			};
 
+			var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secureKey));
 
-			return new JwtSecurityTokenHandler().WriteToken(securityToken);
+			var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+
+			var securityToken = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddMinutes(60), issuer: _configuration.GetSection("Jwt:Issuer").Value, audience: _configuration.GetSection("Jwt:Audience").Value, signingCredentials: signingCred);
+
+			string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
+
+			return tokenString;
 		}
 
 		public JwtSecurityToken Verify(string jwt)
@@ -28,10 +44,14 @@ namespace GameNow.Server.Helpers
 			var key = Encoding.ASCII.GetBytes(secureKey);
 			tokenHandler.ValidateToken(jwt, new TokenValidationParameters
 			{
-				IssuerSigningKey = new SymmetricSecurityKey(key),
+				ValidateActor = true,
+				ValidateIssuer = true,
+				ValidateAudience = true,
+				RequireExpirationTime = true,
 				ValidateIssuerSigningKey = true,
-				ValidateIssuer = false,
-				ValidateAudience = false
+				ValidIssuer = _configuration.GetSection("Jwt:Issuer").Value,
+				ValidAudience = _configuration.GetSection("Jwt:Audience").Value,
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value))
 			}, out SecurityToken validatedToken);
 
 			return (JwtSecurityToken)validatedToken;
