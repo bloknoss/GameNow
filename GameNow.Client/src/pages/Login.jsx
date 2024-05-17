@@ -2,17 +2,17 @@ import axios from "axios";
 import { useState } from "react";
 
 export default function Login() {
-    const [inputs, setInputs] = useState({});
+    const [formData, setFormData] = useState({ email: "", password: "" });
 
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        setInputs((values) => ({ ...values, [name]: value }));
+        setFormData((values) => ({ ...values, [name]: value }));
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        axios.post("/api/login", inputs).then((response) => {
+        axios.post("/api/login", formData).then((response) => {
             console.log(response);
             const token = response.data;
 
@@ -25,46 +25,58 @@ export default function Login() {
     };
 
     return (
-        <div className="w-full max-w-xs">
-            <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pb-8 mb-4">
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                        Email
-                    </label>
-                    <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="email"
-                        name="email"
-                        onChange={handleChange}
-                        value={inputs.email || ""}
-                        type="email"
-                        placeholder="xxxxxx@gmail.com"
-                    />
+        <div className="p-10 bg-slate-200 rounded-xl border w-full max-w-xs">
+            <form onSubmit={handleSubmit} className="w-full max-w-lg">
+                <div className="flex flex-wrap -mx-3 mb-6">
+                    <div className="w-full md:w-2/2 px-3 mb-6 md:mb-0">
+                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
+                            Email
+                        </label>
+                        <input
+                            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                            name="email"
+                            onChange={handleChange}
+                            value={formData.email}
+                            type="email"
+                            placeholder="example@example.com"
+                        />
+                        {(formData.email === null || formData.email.length <= 0) && (
+                            <p className="text-red-500 text-xs italic">Email is a required field.</p>
+                        )}
+                    </div>
                 </div>
-                <div className="mb-6">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                        Password
-                    </label>
-                    <input
-                        className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                        onChange={handleChange}
-                        name="password"
-                        value={inputs.password || ""}
-                        id="password"
-                        type="password"
-                        placeholder="******************"
-                    />
+                <div className="flex flex-wrap -mx-3 mb-6">
+                    <div className="w-full px-3">
+                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-password">
+                            Password
+                        </label>
+                        <input
+                            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            type="password"
+                            placeholder="******************"
+                        />
+                        {(formData.password === null || formData.password.length === 0) && (
+                            <p className="text-red-500 text-xs italic">Password is a required field.</p>
+                        )}
+                    </div>
                 </div>
-                <div className="flex items-center justify-between">
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="submit"
-                    >
-                        Sign In
-                    </button>
-                    <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
-                        Forgot Password?
-                    </a>
+                <div className="flex flex-wrap -mx-3 mb-3">
+                    <div className="w-full px-3">
+                        <button
+                            className="appearance-none block w-full transition-all bg-blue-500 bold text-black border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-blue-600 hover:bg-blue-700 focus:border-gray-500"
+                            id="grid-password"
+                            name="password"
+                            type="submit"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="*************"
+                        >
+                            Login
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

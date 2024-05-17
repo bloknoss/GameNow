@@ -1,16 +1,16 @@
 ﻿using GameNow.Domain.Entities;
 using BCrypt.Net;
 using GameNow.Domain.Interfaces;
-using GameNow.Server.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using GameNow.Infrastructure.Repositories;
 using GameNow.Server.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using GameNow.Server.Models;
 
 namespace GameNow.Server.Controllers
 {
-	[ApiController]
+    [ApiController]
 	[Route("/api/")]
 	public class AuthController : Controller
 	{
@@ -27,7 +27,7 @@ namespace GameNow.Server.Controllers
 		}
 
 		[HttpPost("register")]
-		public async Task<IActionResult> Register(RegisterDto register)
+		public async Task<IActionResult> Register(RegisterModel register)
 		{
 			var user = new User
 			{
@@ -40,7 +40,7 @@ namespace GameNow.Server.Controllers
 
 
 		[HttpPost("login")]
-		public async Task<IActionResult> Login(LoginDto login)
+		public async Task<IActionResult> Login(LoginModel login)
 		{
 			var user = await _userManager.FindByEmailAsync(login.Email);
 
@@ -59,6 +59,7 @@ namespace GameNow.Server.Controllers
 			return Ok("hello");
 		}
 
+		[Authorize]
 		[HttpPost("logout")]
 		public IActionResult Logout()
 		{

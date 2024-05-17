@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  gamenowapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gamenowapi
+    ports:  
+      - "8080:8080"
+      - "8080:8080"
+      - "443:443"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_HTTP_PORTS: "5173"
+      ASPNETCORE_HTTPS_PORTS: "8081"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "Alvaro_002"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/GameNow.Server.pfx"
+    volumes:
+      - ~/.aspnet/https:/https
+
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.6
+
+
+  mssql:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: mssql
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.5
+    ports:
+      - "1433:1433" 
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=Alvaro_002
+
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
+         gateway: 10.5.0.1

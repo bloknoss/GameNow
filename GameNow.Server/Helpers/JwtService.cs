@@ -1,5 +1,5 @@
 ﻿using GameNow.Domain.Entities;
-using GameNow.Server.Dtos;
+using GameNow.Server.Models;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http;
 using System.IdentityModel.Tokens.Jwt;
