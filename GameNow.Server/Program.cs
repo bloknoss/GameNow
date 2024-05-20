@@ -2,14 +2,16 @@ using GameNow.Database;
 using GameNow.Domain.Entities;
 using GameNow.Domain.Interfaces;
 using GameNow.Infrastructure.Repositories;
-using GameNow.Server.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using GameNow.Server.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
+using GameNow.Server.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 builder.Services.AddScoped<IRepository<Game>, GameRepository>();
 builder.Services.AddScoped<IRepository<IdentityUser>, UserRepository>();
+builder.Services.AddScoped<IEmailSender, EmailService>();
 builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddAuthentication(options =>
@@ -46,7 +49,8 @@ builder.Services.AddAuthentication(options =>
 		ValidateIssuerSigningKey = true,
 		ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
 		ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value!))
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key")
+			.Value!))
 	};
 });
 

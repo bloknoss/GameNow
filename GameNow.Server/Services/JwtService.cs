@@ -1,12 +1,10 @@
-﻿using GameNow.Domain.Entities;
-using GameNow.Server.Models;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using GameNow.Domain.Entities;
+using Microsoft.IdentityModel.Tokens;
 
-namespace GameNow.Server.Helpers
+namespace GameNow.Server.Services
 {
 	public class JwtService
 	{
