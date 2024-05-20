@@ -21,6 +21,7 @@ builder.Services.AddCors();
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
 	options.User.RequireUniqueEmail = true;
+	options.SignIn.RequireConfirmedAccount = true;
 }).AddEntityFrameworkStores<GameNowContext>().AddDefaultTokenProviders();
 
 

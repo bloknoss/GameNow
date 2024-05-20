@@ -5,23 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 using GameNow.Infrastructure.Repositories;
 using GameNow.Server.Helpers;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization; 
 using GameNow.Server.Models;
 
 namespace GameNow.Server.Controllers
 {
     [ApiController]
-	[Route("/api/")]
+	[Route("/api/auth")]
 	public class AuthController : Controller
 	{
-		private readonly IRepository<IdentityUser> _userRepository;
 		private readonly UserManager<User> _userManager;
 		private readonly JwtService _jwtService;
 
 
 		public AuthController(IRepository<IdentityUser> userRepository, UserManager<User> userManager, JwtService jwtService)
 		{
-			_userRepository = userRepository;
 			_userManager = userManager;
 			_jwtService = jwtService;
 		}
