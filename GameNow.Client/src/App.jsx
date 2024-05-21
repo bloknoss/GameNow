@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 
 export default function App() {
     return (
-        <main className="">
+        <main style={{background:"#E5E5E5"}}  className="min-h-screen">
             <BrowserRouter>
                 <Navbar></Navbar>
                 <main className="mt-10 flex items-center justify-center">

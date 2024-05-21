@@ -3,7 +3,7 @@ import logo from "../assets/icon.jpg";
 
 export default function Navbar() {
     return (
-        <div className="px-4 mx-auto stick shadow-md max-w-[100vw] sm:px-6">
+        <div className="bg-white px-4 mx-auto stick shadow-md max-w-[100vw] sm:px-6">
             <div className="relative pt-6 pb-6">
                 <nav className="relative flex items-center justify-between sm:h-10 md:justify-center" aria-label="Global">
                     <div className=" pl-5 flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">

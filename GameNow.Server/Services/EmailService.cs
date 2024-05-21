@@ -19,11 +19,12 @@ public class EmailService : IEmailSender
         SmtpClient client = new SmtpClient
         {
             Port = 587,
-            Host = "smtp.gmail.com", //or another email sender provider
+            Host = "smtp.gmail.com",
             EnableSsl = true,
             DeliveryMethod = SmtpDeliveryMethod.Network,
             UseDefaultCredentials = false,
-            Credentials = new NetworkCredential(_configuration["EmailCredentials:Sender"], _configuration["EmailCredentials:Password"])
+            Credentials = new NetworkCredential(_configuration["EmailCredentials:Sender"],
+                _configuration["EmailCredentials:Password"])
         };
 
         MailMessage msg = new MailMessage();

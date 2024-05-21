@@ -31,6 +31,12 @@ namespace GameNow.Server.Controllers
             _emailService = (EmailService?)emailService;
         }
 
+        [HttpGet("test")]
+        public IActionResult test()
+        {
+            return Ok("eee");
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel register)
         {
@@ -41,7 +47,6 @@ namespace GameNow.Server.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, register.Password);
-
 
             if (result.Succeeded)
             {
@@ -63,7 +68,7 @@ namespace GameNow.Server.Controllers
             var user = await _userManager.FindByIdAsync(id);
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
 
-            if (user!.Id == null || code == null)
+            if (user.Id == null || code == null)
                 return BadRequest();
 
 
