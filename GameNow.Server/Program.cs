@@ -15,7 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors();
+builder.Services.AddCors(); 
+
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -47,6 +48,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key")
             .Value!))
     };
+    
 });
 
 builder.Services.AddDbContext<GameNowContext>(options =>

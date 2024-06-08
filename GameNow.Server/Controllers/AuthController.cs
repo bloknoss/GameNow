@@ -31,12 +31,14 @@ namespace GameNow.Server.Controllers
             _emailService = (EmailService?)emailService;
         }
 
-        [HttpGet("test")]
-        public IActionResult test()
-        {
-            return Ok("eee");
-        }
 
+        [Authorize]
+        [HttpGet("ping")]
+        public IActionResult Ping()
+        {
+            return Ok("hello");
+        }
+        
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel register)
         {
@@ -80,28 +82,25 @@ namespace GameNow.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel login)
         {
-            var user = await _userManager.FindByEmailAsync(login.Email);
+            User? user = await _userManager.FindByEmailAsync(login.Email);
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, login.Password))
                 return BadRequest(new { message = "Invalid Credentials" });
 
+
             var jwt = _jwtService.Generate(user);
 
+            Response.Cookies.Append("X-Access-Token", jwt, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+            Response.Cookies.Append("X-Username", user.UserName!, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+            
             return Ok(jwt);
-        }
-
-        [Authorize]
-        [HttpPost("user")]
-        public IActionResult User()
-        {
-            return Ok("hello");
         }
 
         [Authorize]
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("jwt");
+            Response.Cookies.Delete("X-Access-Token");
             return Ok(new
             {
                 message = "success"
