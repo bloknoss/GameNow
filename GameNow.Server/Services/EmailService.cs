@@ -1,6 +1,9 @@
 using System.Net;
 using System.Net.Mail;
 using System.Reflection;
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using Mailjet.Client.TransactionalEmails;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace GameNow.Server.Services;
@@ -14,27 +17,24 @@ public class EmailService : IEmailSender
         _configuration = configuration;
     }
 
-    public Task SendEmailAsync(string username, string to, string callbackUrl)
+    public async Task SendEmailAsync(string username, string to, string callbackUrl)
     {
-        SmtpClient client = new SmtpClient
-        {
-            Port = 587,
-            Host = "smtp.gmail.com",
-            EnableSsl = true,
-            DeliveryMethod = SmtpDeliveryMethod.Network,
-            UseDefaultCredentials = false,
-            Credentials = new NetworkCredential(_configuration["EmailCredentials:Sender"],
-                _configuration["EmailCredentials:Password"])
-        };
 
         MailMessage msg = new MailMessage();
         msg.Subject = "Account Confirmation Email";
-        msg.From = new MailAddress("gamenow@sender.com", "GameNow");
+        msg.From = new MailAddress(_configuration["EmailCredentials:Sender"]!, "GameNow");
         msg.To.Add(to);
         msg.IsBodyHtml = true;
         msg.Body = GetHtml(username, callbackUrl);
 
-        return client.SendMailAsync(msg);
+        using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+        {
+            smtp.Credentials = new NetworkCredential(_configuration["EmailCredentials:Sender"], _configuration["EmailCredentials:Password"]);
+            smtp.EnableSsl = true;
+            smtp.Send(msg);
+        }
+
+        await Task.Delay(1);
     }
 
     string GetHtml(string userName, string callbackUrl)

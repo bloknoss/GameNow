@@ -1,6 +1,8 @@
 using GameNow.Domain.Entities;
 using GameNow.Domain.Interfaces;
+using GameNow.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNow.Server.Controllers
@@ -10,12 +12,12 @@ namespace GameNow.Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
-        private readonly IRepository<User> _userRepository;
+        private readonly UserRepository _userRepository;
 
-        public UserController(ILogger<UserController> logger, IRepository<User> userRepository)
+        public UserController(ILogger<UserController> logger, IRepository<IdentityUser> userRepository)
         {
             _logger = logger;
-            _userRepository = userRepository;
+            _userRepository = (UserRepository)userRepository;
         }
 
         [HttpGet("GetUsers")]
@@ -25,9 +27,9 @@ namespace GameNow.Server.Controllers
         }
 
         [HttpGet("GetUser")]
-        public IActionResult GetUserById(int Id)
+        public IActionResult GetUser(string Email)
         {
-            return Ok(_userRepository.GetById(Id));
+            return Ok(_userRepository.GetByEmail(Email));
         }
 
         [HttpDelete("DeleteUser")]

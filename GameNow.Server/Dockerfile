@@ -17,7 +17,6 @@ FROM with-node AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["GameNow.Server/GameNow.Server.csproj", "GameNow.Server/"]
-COPY ["GameNow.Client/GameNow.Client.esproj", "GameNow.Client/"]
 RUN dotnet restore "./GameNow.Server/GameNow.Server.csproj"
 COPY . .
 WORKDIR "/src/GameNow.Server"

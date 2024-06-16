@@ -9,13 +9,18 @@ using GameNow.Server.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddControllers();
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(); 
+builder.Services.AddCors();
 
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -27,6 +32,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddScoped<IRepository<Game>, GameRepository>();
 builder.Services.AddScoped<IRepository<IdentityUser>, UserRepository>();
 builder.Services.AddScoped<IEmailSender, EmailService>();
+builder.Services.AddTransient<IAuthorizationHandler, EmailVerifiedHandler>();
 builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddAuthentication(options =>
@@ -48,8 +54,16 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key")
             .Value!))
     };
-    
+
 });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("VerifiedEmail", policy =>
+        policy.Requirements.Add(new EmailVerifiedRequirement()));
+});
+
+
 
 builder.Services.AddDbContext<GameNowContext>(options =>
 {

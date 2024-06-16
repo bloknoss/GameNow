@@ -12,13 +12,15 @@ namespace GameNow.Domain.Entities
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int Id { get; set; }
-		public string Name { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
 		public string Description { get; set; }
-		public int Price { get; set; }
-		public bool EarlyAcess { get; set; }
+		public string Image { get; set; }
+		public decimal Price { get; set; }
+		public bool EarlyAccess { get; set; }
 		public int RecentReviews { get; set; }
-		public int RecentRating { get; set; }
+		public string TrailerUrl{ get; set; }
+        public int RecentRating { get; set; }
 		public int AllReviews { get; set; }
 		public int HistoricalRating { get; set; }
 		public int Achievements { get; set; }

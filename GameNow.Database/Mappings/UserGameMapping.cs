@@ -9,15 +9,11 @@ using System.Threading.Tasks;
 
 namespace GameNow.Database.Mappings
 {
-    public class GameMapping : IEntityTypeConfiguration<Game>
+    public class UserGameMapping : IEntityTypeConfiguration<Game>
     {
         public void Configure(EntityTypeBuilder<Game> builder)
         {
-            builder.ToTable("Game");
-
-            builder.Property(g => g.Price)
-       .HasColumnType("decimal(18,2)");
-
+            builder.ToTable("UserGame");
         }
     }
 }
