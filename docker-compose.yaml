@@ -8,7 +8,6 @@ services:
     container_name: gamenowapi
     ports:  
       - "8080:8080"
-      - "8080:8080"
       - "8081:8081"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
