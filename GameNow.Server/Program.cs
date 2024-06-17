@@ -78,7 +78,7 @@ using (var scope = app.Services.CreateScope())
     context.Database.Migrate();
 }
 
-app.UseCors(options => { options.AllowAnyHeader().AllowAnyMethod().AllowCredentials().AllowAnyOrigin(); });
+app.UseCors(options => { options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
