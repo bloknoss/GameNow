@@ -22,6 +22,7 @@ namespace GameNow.Server.Services
             IEnumerable<System.Security.Claims.Claim> claims = new List<System.Security.Claims.Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim("userName", user.UserName),
                 new Claim(ClaimTypes.Role, "Admin")
             };
 

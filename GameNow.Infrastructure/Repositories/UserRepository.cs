@@ -31,6 +31,14 @@ namespace GameNow.Infrastructure.Repositories
             _dbContext.Users.Remove(user);
             _dbContext.SaveChanges();
         }
+
+        public void Delete(string Id)
+        {
+            var user = _dbContext.Users.Where(u => u.Id == Id.ToString()).First();
+            _dbContext.Users.Remove(user);
+            _dbContext.SaveChanges();
+        }
+
         public void Update(IdentityUser entity)
         {
             _dbContext.Update(entity);
@@ -38,6 +46,11 @@ namespace GameNow.Infrastructure.Repositories
         }
 
         public IdentityUser GetById(int Id)
+        {
+            return _dbContext.Users.FirstOrDefault(e => e.Id == Id.ToString());
+        }
+
+        public IdentityUser GetById(string Id)
         {
             return _dbContext.Users.FirstOrDefault(e => e.Id == Id.ToString());
         }

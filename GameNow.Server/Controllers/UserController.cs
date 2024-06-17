@@ -1,6 +1,8 @@
+using GameNow.Database;
 using GameNow.Domain.Entities;
 using GameNow.Domain.Interfaces;
 using GameNow.Infrastructure.Repositories;
+using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,20 +29,28 @@ namespace GameNow.Server.Controllers
         }
 
         [HttpGet("GetUser")]
-        public IActionResult GetUser(string Email)
+        public IActionResult GetUser(string Id)
         {
-            return Ok(_userRepository.GetByEmail(Email));
+            return Ok(_userRepository.GetById(Id));
+        }
+
+
+        [HttpPost("InsertUser")]
+        public IActionResult InsertUser(Domain.Entities.User user)
+        {
+            _userRepository.Add(user);
+            return Ok();
         }
 
         [HttpDelete("DeleteUser")]
-        public IActionResult Delete(int Id)
+        public IActionResult Delete(string Id)
         {
             _userRepository.Delete(Id);
             return Ok();
         }
 
         [HttpPut("UpdateUser")]
-        public IActionResult Update(User user)
+        public IActionResult Update(Domain.Entities.User user)
         {
             _userRepository.Update(user);
             return Ok();

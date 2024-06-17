@@ -29,6 +29,13 @@ namespace GameNow.Server.Controllers
         public IActionResult GetGameById(int Id)
         {
             return Ok(_gameRepository.GetById(Id));
+
+
+        }
+        [HttpPost("InsertGame")]
+        public IActionResult InsertGame(Game game)
+        {
+            return Ok(_gameRepository.Add(game));
         }
 
         [HttpDelete("DeleteGame")]

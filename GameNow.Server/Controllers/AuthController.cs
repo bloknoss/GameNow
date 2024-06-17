@@ -36,7 +36,7 @@ namespace GameNow.Server.Controllers
         }
 
 
-        [Authorize(Roles = "Admin", Policy = "VerifiedEmail")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("admin")]
         public IActionResult adminPing()
         {
@@ -107,7 +107,7 @@ namespace GameNow.Server.Controllers
 
 
             var result = await _userManager.ConfirmEmailAsync(user, code!);
-            return Ok(result);
+            return Redirect("https://front-game-now.vercel.app/login");
         }
 
 
@@ -139,4 +139,4 @@ namespace GameNow.Server.Controllers
             });
         }
     }
-}
+} 
